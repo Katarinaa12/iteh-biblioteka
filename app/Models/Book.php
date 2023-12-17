@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Book extends Model
 {
     use HasFactory;
-    protected $fillable = ['isbn', 'name', 'description', 'pages', 'published_year', 'preview', 'content'];
+    protected $fillable = ['isbn', 'name', 'description', 'pages', 'published_year', 'preview', 'content', 'genre_id'];
 
     protected $casts = [
         'id' => 'integer',
+        'genre_id' => 'integer',
         'isbn' => 'string',
         'name' => 'string',
         'description' => 'string',
@@ -24,5 +25,9 @@ class Book extends Model
     public function subscriptionTypes()
     {
         return $this->hasMany(SubscriptionType::class);
+    }
+    public function genre()
+    {
+        return $this->belongsTo(Genre::class);
     }
 }
