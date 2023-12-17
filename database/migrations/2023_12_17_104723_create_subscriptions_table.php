@@ -21,7 +21,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('name');
             $table->boolean('confirmed');
             $table->timestamp('start_time')->nullable();
-            $table->bigInteger('duration');
+            $table->timestamp('end_time')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
         });
     }
