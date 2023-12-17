@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SubscriptionResource;
 use App\Models\Subscription;
 use App\Models\SubscriptionType;
 use Illuminate\Http\Request;
@@ -33,9 +34,51 @@ class SubscriptionController extends Controller
         $subscription = Subscription::create([
             'user_id' => $user->id,
             'name' => $subscriptionType->name,
+            'duration' => $subscriptionType->duration,
             'book_id' => $subscriptionType->book_id,
             'price' => $subscriptionType->price,
-            'status' => 'pending',
+            'status' => 'pending'
         ]);
+        return response()->json(new SubscriptionResource($subscription));
+    }
+
+    public function accept(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!$user->admin) {
+            return response()->json(["error" => "Missing permissions"], 403);
+        }
+        $subscription = Subscription::find($id);
+        if (!$subscription) {
+            return response()->json(['error' => 'Missing subscription'], 404);
+        }
+        if ($subscription->status != 'pending') {
+            return response()->json(['error' => 'Subscription is in invalid status'], 400);
+        }
+        $subscription->update([
+            'start_time' => time(),
+            'end_time' => time() + $subscription->duration * 24 * 60 * 60,
+            'status' => 'accepted'
+        ]);
+        return response()->json(new SubscriptionResource($subscription));
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $user = $request->user();
+        if (!$user->admin) {
+            return response()->json(["error" => "Missing permissions"], 403);
+        }
+        $subscription = Subscription::find($id);
+        if (!$subscription) {
+            return response()->json(['error' => 'Missing subscription'], 404);
+        }
+        if ($subscription->status != 'pending') {
+            return response()->json(['error' => 'Subscription is in invalid status'], 400);
+        }
+        $subscription->update([
+            'status' => 'rejected'
+        ]);
+        return response()->json(new SubscriptionResource($subscription));
     }
 }

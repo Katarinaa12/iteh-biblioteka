@@ -18,6 +18,7 @@ class SubscriptionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->price,
+            'duration' => $this->duration,
             'startTime' => $this->start_time,
             'endTime' => $this->end_time,
             'status' => $this->status,
