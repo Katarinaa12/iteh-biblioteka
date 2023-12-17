@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\BookResource;
+use App\Http\Resources\BooksCollection;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,9 +15,21 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $page = $request->query('page', 0);
+        $size = $request->query('size', 10);
+        $name = $request->query('name', null);
+        $genreId = $request->query('genre_id', null);
+        $where = [];
+        if ($name != null) {
+            $where[] = ['name', 'like', '%' . $name . '%'];
+        }
+        if ($genreId != null) {
+            $where[] = ['genre_id', '=', $genreId];
+        }
+        $result = Book::where($where)->paginate($size, ['*'], 'page', $page);
+        return response()->json(new BooksCollection($result));
     }
 
     /**
