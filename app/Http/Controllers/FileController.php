@@ -24,16 +24,12 @@ class FileController extends Controller
 
         if ($validator->fails()) {
 
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()], 400);
         }
 
 
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filename = $file->getClientOriginalName();
-            Storage::disk('local')->put($filename, $file);
-        }
-        return response()->noContent();
+        $fileName = $request->file('file')->store('local');
+        return response()->json(['fileName' => $fileName]);
     }
 
     public function getBookFile(Request $request, $bookId)
@@ -53,6 +49,6 @@ class FileController extends Controller
         if (!$subscription) {
             return response()->json(["error" => "Missing subscription"], 403);
         }
-        return response(Storage::disk('local')->get($fileName));
+        return response()->file(Storage::disk('local')->get($fileName));
     }
 }
