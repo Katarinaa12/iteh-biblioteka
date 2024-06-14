@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Book, Books } from '../types'
+import { Book, Books, Genre, Subscription } from '../types'
 import axios from 'axios'
 interface BooksSearchParams {
     name: string,
@@ -42,4 +42,36 @@ export function useGetBook(bookId: number) {
     }, [bookId])
 
     return { book, loading }
+}
+
+export function useGetSubscriptions() {
+    const [loading, setLoading] = useState(true)
+    const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
+    useEffect(() => {
+        setLoading(true);
+        axios.get('/api/subscriptions').then((result) => {
+            setSubscriptions(result.data)
+        })
+            .finally(() => {
+                setLoading(false)
+            })
+    }, [])
+
+    return { subscriptions, loading }
+}
+
+export function useGetGenres() {
+    const [loading, setLoading] = useState(true)
+    const [genres, setGenres] = useState<Genre[]>([])
+    useEffect(() => {
+        setLoading(true);
+        axios.get('/api/genres').then((result) => {
+            setGenres(result.data)
+        })
+            .finally(() => {
+                setLoading(false)
+            })
+    }, [])
+
+    return { genres, loading }
 }

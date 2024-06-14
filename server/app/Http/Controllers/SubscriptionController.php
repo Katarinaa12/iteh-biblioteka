@@ -12,6 +12,18 @@ class SubscriptionController extends Controller
 {
 
 
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->admin) {
+            return response()->json(SubscriptionResource::collection(Subscription::query()->where('user_id', $user->id)->get()));
+        }
+        return response()->json(SubscriptionResource::collection(Subscription::all()));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
