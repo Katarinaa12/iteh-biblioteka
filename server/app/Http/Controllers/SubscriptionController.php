@@ -23,7 +23,7 @@ class SubscriptionController extends Controller
         $validator = Validator::make($request->all(), [
             'subscriptionTypeId' => 'required|integer'
         ]);
-        if (!$validator->fails()) {
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
         $subscriptionType = SubscriptionType::find($request->subscriptionTypeId);
