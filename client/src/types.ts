@@ -61,3 +61,9 @@ export interface SubscriptionCreate {
     subscriptionTypeId: number
 
 }
+
+export interface RegisterUser {
+    email: string,
+    name: string,
+    password: string,
+}
