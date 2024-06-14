@@ -3,7 +3,7 @@ import NavbarLink from './NavbarLink'
 import { useUserContext } from '../userContext';
 
 export default function Navbar() {
-    const { user } = useUserContext();
+    const { user, logout } = useUserContext();
     return (
         <AppBar position='static'>
             <Toolbar>
@@ -22,7 +22,7 @@ export default function Navbar() {
                 </Box>
                 {
                     user ? (
-                        <Button color="inherit">
+                        <Button onClick={logout} color="inherit">
                             <Typography
                                 noWrap
                                 sx={{
