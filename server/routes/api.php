@@ -31,9 +31,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('books', BookController::class)->only(['store', 'update', 'destroy']);
 });
-
-// GET /books - vrati sve knjige - index
-// GET /books/{id} - vrati knjigu sa datim id - jem - show
-// POST /books - kreiraj knjigu - store
-// PUT /books/{id} - izmeni knjigu sa datim id - jem - update
-// DELETE /books/{id} - obrisi knjigu sa datim id - jem - destroy
