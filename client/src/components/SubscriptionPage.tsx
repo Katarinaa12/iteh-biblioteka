@@ -4,14 +4,22 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetSubscriptions } from '../hooks/apiHooks';
 import { useUserContext } from '../userContext';
-import { formatDateString } from '../util';
+import { formatDateString, generateCsvFileFromData } from '../util';
 import LoadingScreen from './LoadingScreen';
 import Select from './Select';
+import { sub } from 'date-fns';
 export default function SubscriptionPage() {
     const { user } = useUserContext();
     const { loading, subscriptions, setSubscriptions } = useGetSubscriptions();
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
+    const filtered = subscriptions
+        .filter(subscription => {
+            return (!name ||
+                subscription.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()) ||
+                subscription.book.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())) &&
+                (!status || subscription.status === status)
+        })
     if (loading) {
         return (
             <LoadingScreen />
@@ -59,7 +67,23 @@ export default function SubscriptionPage() {
                         }
                     })}
                 />
+                <Button variant='outlined' color='success' onClick={() => {
+                    generateCsvFileFromData(filtered.map(subscription => {
+                        return {
+                            Id: subscription.id,
+                            Name: subscription.name,
+                            Duration: subscription.duration,
+                            'Start Time': subscription.startTime,
+                            'End Time': subscription.endTime,
+                            Status: subscription.status,
+                            Price: subscription.price,
+                            User: subscription.user.name,
+                            Book: subscription.book.name,
+                        }
+                    }), 'subscriptions')
+                }} >Export</Button>
             </Box>
+
             <TableContainer component={Paper}>
                 <Table sx={{ width: '100%' }}>
                     <TableHead>
@@ -80,13 +104,7 @@ export default function SubscriptionPage() {
                     </TableHead>
                     <TableBody>
                         {
-                            subscriptions
-                                .filter(subscription => {
-                                    return (!name ||
-                                        subscription.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()) ||
-                                        subscription.book.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())) &&
-                                        (!status || subscription.status === status)
-                                })
+                            filtered
                                 .map(st => {
                                     return (
                                         <TableRow key={st.id}>
