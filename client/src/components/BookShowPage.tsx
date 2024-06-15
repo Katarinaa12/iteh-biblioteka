@@ -129,7 +129,7 @@ export default function BookShowPage() {
                         >Subscription types</Typography>
                         {
                             user?.admin && (
-                                <Button color='primary' >Create</Button>
+                                <Button variant='outlined' color='primary' >Create</Button>
                             )
                         }
                     </Box>
@@ -157,10 +157,10 @@ export default function BookShowPage() {
                                                             {
                                                                 user.admin ? (
                                                                     <Box sx={{ display: 'flex' }}>
-                                                                        <Button color='success' sx={{
+                                                                        <Button variant='outlined' color='success' sx={{
                                                                             flex: 1,
                                                                         }} >Update</Button>
-                                                                        <Button color='error' sx={{
+                                                                        <Button variant='outlined' color='error' sx={{
                                                                             flex: 1,
                                                                         }} >Delete</Button>
                                                                     </Box>

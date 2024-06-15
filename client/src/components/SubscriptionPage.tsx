@@ -124,12 +124,12 @@ export default function SubscriptionPage() {
                                             {
                                                 user?.admin && st.status === 'pending' && (
                                                     <Box sx={{ display: 'flex' }}>
-                                                        <Button onClick={() => {
+                                                        <Button variant='outlined' onClick={() => {
                                                             changeStatus(st.id, 'accepted')
                                                         }} color='success' sx={{
                                                             flex: 1,
                                                         }} >Accept</Button>
-                                                        <Button onClick={() => {
+                                                        <Button variant='outlined' onClick={() => {
                                                             changeStatus(st.id, 'rejected')
                                                         }} color='error' sx={{
                                                             flex: 1,

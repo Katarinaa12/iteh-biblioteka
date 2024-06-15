@@ -8,17 +8,22 @@ export function useSearchBooks() {
     const [loading, setLoading] = useState(true)
     const [books, setBooks] = useState<Books | undefined>(undefined)
     const location = useLocation();
-    useEffect(() => {
-        setLoading(true);
-        axios.get('/api/books' + location.search).then((result) => {
+    const fetchBooks = async () => {
+        try {
+            setLoading(true);
+            const result = await axios.get('/api/books' + location.search)
             setBooks(result.data)
-        })
-            .finally(() => {
-                setLoading(false)
-            })
-    }, [location])
+        } catch (error) {
 
-    return { books, loading }
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        fetchBooks();
+    }, [location.search])
+
+    return { books, loading, fetchBooks }
 }
 
 export function useGetBook(bookId: number) {
