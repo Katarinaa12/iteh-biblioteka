@@ -6,6 +6,7 @@ use App\Http\Resources\SubscriptionResource;
 use App\Models\Subscription;
 use App\Models\SubscriptionType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller
@@ -93,5 +94,45 @@ class SubscriptionController extends Controller
             'status' => 'rejected'
         ]);
         return response()->json(new SubscriptionResource($subscription));
+    }
+
+    public function booksIncome(Request $request)
+    {
+        $from = $request->query('from', null);
+        $to = $request->query('to', null);
+        $user = $request->user();
+        if (!$user->admin) {
+            return response()->json(["error" => "Missing permissions"], 403);
+        }
+        $query = DB::table('books')->select('books.id', 'books.name', DB::raw('SUM(subscriptions.price) as income'))
+            ->leftJoin('subscriptions', 'subscriptions.book_id', '=', 'books.id');
+        if ($from) {
+            $query = $query->where('subscriptions.created_at', '>', $from);
+        }
+        if ($to) {
+            $query = $query->where('subscriptions.created_at', '<', $to);
+        }
+        $query = $query->groupBy('books.id')
+            ->groupBy('books.name');
+        return response()->json($query->get());
+    }
+
+    public function subscriptionsByStatus(Request $request)
+    {
+        $from = $request->query('from', null);
+        $to = $request->query('to', null);
+        $user = $request->user();
+        if (!$user->admin) {
+            return response()->json(["error" => "Missing permissions"], 403);
+        }
+        $query = DB::table('subscriptions')->select('subscriptions.status', DB::raw('SUM(*) as total'));
+        if ($from) {
+            $query = $query->where('subscriptions.created_at', '>', $from);
+        }
+        if ($to) {
+            $query = $query->where('subscriptions.created_at', '<', $to);
+        }
+        $query = $query->groupBy('subscriptions.status');
+        return response()->json($query->get());
     }
 }

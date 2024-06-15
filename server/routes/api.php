@@ -27,6 +27,8 @@ Route::get('genres', [GenreController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('upload', [FileController::class, 'uploadFile']);
     Route::get('subscriptions', [SubscriptionController::class, 'index']);
+    Route::get('subscriptions-income', [SubscriptionController::class, 'booksIncome']);
+    Route::get('subscriptions-summary', [SubscriptionController::class, 'subscriptionsByStatus']);
     Route::post('subscriptions', [SubscriptionController::class, 'store']);
     Route::put('subscriptions/{id}/accept', [SubscriptionController::class, 'accept']);
     Route::put('subscriptions/{id}/reject', [SubscriptionController::class, 'reject']);
