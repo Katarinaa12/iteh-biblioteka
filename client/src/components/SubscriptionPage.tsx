@@ -1,18 +1,37 @@
-import React, { useState } from 'react'
-import { useGetSubscriptions } from '../hooks/apiHooks'
-import LoadingScreen from './LoadingScreen';
-import { Box, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import Select from './Select';
+import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import axios from 'axios';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useGetSubscriptions } from '../hooks/apiHooks';
+import { useUserContext } from '../userContext';
 import { formatDateString } from '../util';
+import LoadingScreen from './LoadingScreen';
+import Select from './Select';
 export default function SubscriptionPage() {
-    const { loading, subscriptions } = useGetSubscriptions();
+    const { user } = useUserContext();
+    const { loading, subscriptions, setSubscriptions } = useGetSubscriptions();
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
     if (loading) {
         return (
             <LoadingScreen />
         )
+    }
+    const changeStatus = async (subscriptionId: number, newStatus: string) => {
+
+        const statusUrlMap = new Map([
+            ['accepted', 'accept'],
+            ['rejected', 'reject']
+        ])
+        const res = await axios.put(`/api/subscriptions/${subscriptionId}/${statusUrlMap.get(newStatus)}`);
+        setSubscriptions(prev => {
+            return prev.map(element => {
+                if (element.id === subscriptionId) {
+                    return res.data
+                }
+                return element;
+            })
+        })
     }
     return (
         <Container sx={{
@@ -52,6 +71,11 @@ export default function SubscriptionPage() {
                             <TableCell>Start</TableCell>
                             <TableCell>End</TableCell>
                             <TableCell>Price</TableCell>
+                            {
+                                user?.admin && (
+                                    <TableCell>Actions</TableCell>
+                                )
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -79,7 +103,22 @@ export default function SubscriptionPage() {
                                             <TableCell>{formatDateString(st.startTime)}</TableCell>
                                             <TableCell>{formatDateString(st.endTime)}</TableCell>
                                             <TableCell>{st.price}</TableCell>
-
+                                            {
+                                                user?.admin && st.status === 'pending' && (
+                                                    <Box sx={{ display: 'flex' }}>
+                                                        <Button onClick={() => {
+                                                            changeStatus(st.id, 'accepted')
+                                                        }} color='success' sx={{
+                                                            flex: 1,
+                                                        }} >Accept</Button>
+                                                        <Button onClick={() => {
+                                                            changeStatus(st.id, 'rejected')
+                                                        }} color='error' sx={{
+                                                            flex: 1,
+                                                        }} >Reject</Button>
+                                                    </Box>
+                                                )
+                                            }
                                         </TableRow>
                                     )
                                 })

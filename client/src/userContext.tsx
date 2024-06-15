@@ -26,10 +26,11 @@ interface Props {
 
 export function UserContextProvider(props: Props) {
     const [user, setUser] = useState<User | undefined>(undefined)
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
+            setLoading(false);
             return;
         }
         axios.defaults.headers.common.Authorization = 'Bearer ' + token;
@@ -39,6 +40,9 @@ export function UserContextProvider(props: Props) {
             .catch(() => {
                 axios.defaults.headers.common.Authorization = undefined;
                 setUser(undefined)
+            })
+            .finally(() => {
+                setLoading(false);
             })
     }, [])
     const login = async (email: string, password: string) => {
@@ -70,7 +74,9 @@ export function UserContextProvider(props: Props) {
 
         }
     }
-
+    if (loading) {
+        return null;
+    }
     return (
         <UserContext.Provider
             value={{

@@ -67,9 +67,10 @@ class SubscriptionController extends Controller
         if ($subscription->status != 'pending') {
             return response()->json(['error' => 'Subscription is in invalid status'], 400);
         }
+        $now = date('Y-m-d H:i:s');
         $subscription->update([
-            'start_time' => time(),
-            'end_time' => time() + $subscription->duration * 24 * 60 * 60,
+            'start_time' =>  $now,
+            'end_time' => date('Y-m-d H:i:s', time() + $subscription->duration * 24 * 60 * 60),
             'status' => 'accepted'
         ]);
         return response()->json(new SubscriptionResource($subscription));

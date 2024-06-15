@@ -6,8 +6,10 @@ import { useBookFile, useGetBook } from '../hooks/apiHooks';
 import { SubscriptionType } from '../types';
 import LoadingScreen from './LoadingScreen';
 import axios from 'axios';
+import { useUserContext } from '../userContext';
 export default function BookShowPage() {
     const { id } = useParams();
+    const { user } = useUserContext();
     const { book, loading } = useGetBook(Number(id));
     const [selectedSubscription, setSelectedSubscription] = useState<SubscriptionType | undefined>(undefined);
     const navigate = useNavigate();
@@ -127,7 +129,7 @@ export default function BookShowPage() {
                                     <TableCell>Name</TableCell>
                                     <TableCell>{`Duration (days)`}</TableCell>
                                     <TableCell>Price</TableCell>
-                                    <TableCell>Buy</TableCell>
+                                    {user && !user.admin && <TableCell>Buy</TableCell>}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -138,13 +140,17 @@ export default function BookShowPage() {
                                                 <TableCell>{st.name}</TableCell>
                                                 <TableCell>{st.duration}</TableCell>
                                                 <TableCell>{st.price}</TableCell>
-                                                <TableCell>
-                                                    <IconButton onClick={() => {
-                                                        setSelectedSubscription(st)
-                                                    }}>
-                                                        <PaymentsIcon />
-                                                    </IconButton>
-                                                </TableCell>
+                                                {
+                                                    user && !user.admin && (
+                                                        <TableCell>
+                                                            <IconButton onClick={() => {
+                                                                setSelectedSubscription(st)
+                                                            }}>
+                                                                <PaymentsIcon />
+                                                            </IconButton>
+                                                        </TableCell>
+                                                    )
+                                                }
 
                                             </TableRow>
                                         )

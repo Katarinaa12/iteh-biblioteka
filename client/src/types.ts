@@ -42,10 +42,11 @@ export interface Subscription {
     duration: number,
     startTime: string,
     endTime: number,
-    status: 'pending' | 'accepted' | 'rejected',
+    status: SubscriptionStatus,
     user: User,
     book: Book
 }
+export type SubscriptionStatus = 'pending' | 'accepted' | 'rejected'
 
 export interface CreateBook {
     name: string,

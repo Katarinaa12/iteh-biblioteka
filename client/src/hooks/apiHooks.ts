@@ -51,7 +51,7 @@ export function useGetSubscriptions() {
             })
     }, [])
 
-    return { subscriptions, loading }
+    return { subscriptions, loading, setSubscriptions }
 }
 
 export function useGetGenres() {
