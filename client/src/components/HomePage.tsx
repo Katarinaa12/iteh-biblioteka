@@ -30,11 +30,11 @@ export default function HomePage() {
                 >
                     Search books
                 </Typography>
-                <form onSubmit={e => {
+                <form className='searchForm' onSubmit={e => {
                     e.preventDefault();
                     navigate('/books?name=' + search)
                 }} >
-                    <TextField fullWidth value={search} onChange={e => setSearch(e.currentTarget.value)} ></TextField>
+                    <TextField placeholder='Search...' fullWidth value={search} onChange={e => setSearch(e.currentTarget.value)} ></TextField>
                 </form>
             </Box>
         </div>

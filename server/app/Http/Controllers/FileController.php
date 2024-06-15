@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +18,7 @@ class FileController extends Controller
             return response()->json(["error" => "Missing permissions"], 403);
         }
         $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:doc,docx,pdf,txt,csv',
+            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpg',
         ]);
 
         if ($validator->fails()) {
@@ -49,6 +48,13 @@ class FileController extends Controller
         if (!$subscription) {
             return response()->json(["error" => "Missing subscription"], 403);
         }
+        return response(Storage::disk('local')->get($fileName));
+    }
+
+    public function getBookPreview($bookId)
+    {
+        $book = Book::find($bookId);
+        $fileName = $book->preview;
         return response(Storage::disk('local')->get($fileName));
     }
 }

@@ -3,6 +3,7 @@ export interface Book {
     name: string,
     isbn: string,
     description: string,
+    writter: string,
     pages: number,
     publishedYear: number,
     preview: string,

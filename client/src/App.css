@@ -2,3 +2,7 @@
   background-image: url('./library.jpg');
   height: 60vh;
 }
+
+.searchForm {
+  width: 40%
+}

@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Book, Books, Genre, Subscription } from '../types'
 import axios from 'axios'
-import { useLocation, useParams } from 'react-router'
-import { useSearchParams } from 'react-router-dom'
-interface BooksSearchParams {
-    name: string,
-    size: number,
-    page: number,
-    genre_id: number
-}
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
+import { Book, Books, Genre, Subscription } from '../types'
+
 
 export function useSearchBooks() {
     const [loading, setLoading] = useState(true)

@@ -46,6 +46,7 @@ class BookController extends Controller
         }
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'writter' => 'required|string|max:255',
             'isbn' => 'required|string',
             'description' => 'required|string',
             'genre_id' => 'required|integer',
@@ -87,6 +88,7 @@ class BookController extends Controller
         }
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
+            'writter' => 'string|max:255',
             'isbn' => 'string',
             'description' => 'string',
             'genre_id' => 'integer',

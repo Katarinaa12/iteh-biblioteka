@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Book extends Model
 {
     use HasFactory;
-    protected $fillable = ['isbn', 'name', 'description', 'pages', 'published_year', 'preview', 'content', 'genre_id'];
+    protected $fillable = ['isbn', 'writter', 'name', 'description', 'pages', 'published_year', 'preview', 'content', 'genre_id'];
 
     protected $casts = [
         'id' => 'integer',
         'genre_id' => 'integer',
         'isbn' => 'string',
         'name' => 'string',
+        'writter' => 'string',
         'description' => 'string',
         'pages' => 'integer',
         'published_year' => 'integer',

@@ -21,11 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::apiResource('books', BookController::class)->only(['index', 'show']);
+Route::get('books/{bookId}/preview', [FileController::class, 'getBookPreview']);
+Route::get('genres', [GenreController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('upload', [FileController::class, 'uploadFile']);
     Route::get('subscriptions', [SubscriptionController::class, 'index']);
-    Route::get('genres', [GenreController::class, 'index']);
     Route::post('subscriptions', [SubscriptionController::class, 'store']);
     Route::put('subscriptions/{id}/accept', [SubscriptionController::class, 'accept']);
     Route::put('subscriptions/{id}/reject', [SubscriptionController::class, 'reject']);
