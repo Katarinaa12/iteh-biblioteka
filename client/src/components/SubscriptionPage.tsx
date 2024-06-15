@@ -46,6 +46,7 @@ export default function SubscriptionPage() {
                     <TableHead>
                         <TableRow>
                             <TableCell>Book</TableCell>
+                            <TableCell>Status</TableCell>
                             <TableCell>Subscription name</TableCell>
                             <TableCell>{`Duration (days)`}</TableCell>
                             <TableCell>Start</TableCell>
@@ -55,25 +56,33 @@ export default function SubscriptionPage() {
                     </TableHead>
                     <TableBody>
                         {
-                            subscriptions.map(st => {
-                                return (
-                                    <TableRow key={st.id}>
-                                        <TableCell>
-                                            {
-                                                <Link to={`/books/${st.book.id}`}>
-                                                    {st.book.name}
-                                                </Link>
-                                            }
-                                        </TableCell>
-                                        <TableCell>{st.name}</TableCell>
-                                        <TableCell>{st.duration}</TableCell>
-                                        <TableCell>{formatDateString(st.startTime)}</TableCell>
-                                        <TableCell>{formatDateString(st.endTime)}</TableCell>
-                                        <TableCell>{st.price}</TableCell>
+                            subscriptions
+                                .filter(subscription => {
+                                    return (!name ||
+                                        subscription.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()) ||
+                                        subscription.book.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())) &&
+                                        (!status || subscription.status === status)
+                                })
+                                .map(st => {
+                                    return (
+                                        <TableRow key={st.id}>
+                                            <TableCell>
+                                                {
+                                                    <Link to={`/books/${st.book.id}`}>
+                                                        {st.book.name}
+                                                    </Link>
+                                                }
+                                            </TableCell>
+                                            <TableCell>{st.status}</TableCell>
+                                            <TableCell>{st.name}</TableCell>
+                                            <TableCell>{st.duration}</TableCell>
+                                            <TableCell>{formatDateString(st.startTime)}</TableCell>
+                                            <TableCell>{formatDateString(st.endTime)}</TableCell>
+                                            <TableCell>{st.price}</TableCell>
 
-                                    </TableRow>
-                                )
-                            })
+                                        </TableRow>
+                                    )
+                                })
                         }
                     </TableBody>
                 </Table>
