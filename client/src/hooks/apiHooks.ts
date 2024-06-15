@@ -69,3 +69,40 @@ export function useGetGenres() {
 
     return { genres, loading }
 }
+
+export function useBookFile(book?: Book) {
+    const url = !book ? '' : `/api/books/${book.id}/file`;
+    const [fileUrl, setFileUrl] = useState('');
+    const splited = (book?.content || '').split('.');
+    const extension = !book ? '' : splited[splited.length - 1];
+    useEffect(() => {
+        if (!url) {
+            return
+        }
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return;
+        }
+        fetch(url, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => {
+                if (!res.ok) {
+                    return Promise.reject();
+                }
+                return res.blob();
+            })
+            .then(bl => {
+                const blob = extension === 'pdf' ? new Blob([bl], { type: 'application/pdf' }) : bl;
+                setFileUrl(URL.createObjectURL(blob))
+            })
+            .catch(e => {
+                setFileUrl('');
+            })
+    }, [url])
+
+    return { fileUrl, extension };
+
+}

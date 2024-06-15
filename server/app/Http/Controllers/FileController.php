@@ -39,7 +39,7 @@ class FileController extends Controller
         if ($user->admin) {
             return response(Storage::disk('local')->get($fileName));
         }
-        $now = time();
+        $now = date('Y-m-d H:i:s');
         $subscription = Subscription::where('book_id', $bookId)->where('user_id', $user->id)
             ->where('status', 'accepted')
             ->where('start_time', '<=', $now)

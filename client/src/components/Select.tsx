@@ -1,4 +1,4 @@
-import { MenuItem, Select as MuiSelect } from '@mui/material'
+import { Select as MuiSelect } from '@mui/material'
 
 interface Props {
     value: any,
