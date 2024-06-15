@@ -14,12 +14,12 @@ export default function Select(props: Props) {
             sx={{
                 minWidth: '200px'
             }}
-            placeholder={props.placeholder}
             onChange={e => {
                 props.onChange(e.target.value)
             }}
             value={props.value}
         >
+            <option value=''>{props.placeholder}</option>
             {props.options.map((option) => (
                 <option key={option.value} value={option.value}>
                     {option.label}

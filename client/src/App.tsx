@@ -9,6 +9,7 @@ import RegisterPage from './components/RegisterPage';
 import BookSearchPage from './components/BookSearchPage';
 import { Box } from '@mui/material';
 import BookShowPage from './components/BookShowPage';
+import SubscriptionPage from './components/SubscriptionPage';
 
 function App() {
   const { user } = useUserContext();
@@ -26,6 +27,7 @@ function App() {
           <Route path='*' element={<HomePage />} />
           <Route path='/books/:id' element={<BookShowPage />} />
           <Route path='/books' element={<BookSearchPage />} />
+          <Route path='/subscriptions' element={<SubscriptionPage />} />
           {
             !user && (
               <>

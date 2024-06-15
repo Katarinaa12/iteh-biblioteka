@@ -1,12 +1,15 @@
-import React from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useBookFile, useGetBook } from '../hooks/apiHooks';
-import LoadingScreen from './LoadingScreen';
-import { Box, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import { Box, Container, Dialog, IconButton, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useBookFile, useGetBook } from '../hooks/apiHooks';
+import { SubscriptionType } from '../types';
+import LoadingScreen from './LoadingScreen';
+import axios from 'axios';
 export default function BookShowPage() {
     const { id } = useParams();
     const { book, loading } = useGetBook(Number(id));
+    const [selectedSubscription, setSelectedSubscription] = useState<SubscriptionType | undefined>(undefined);
     const navigate = useNavigate();
     const { fileUrl } = useBookFile(book);
     if (loading) {
@@ -18,14 +21,58 @@ export default function BookShowPage() {
         navigate('/books');
         return null;
     }
+    const onConfirm = async () => {
+        if (!selectedSubscription) {
+            return;
+        }
+        await axios.post(`/api/subscriptions`, { subscriptionTypeId: selectedSubscription.id });
+        setSelectedSubscription(undefined);
+    }
     return (
         <Container sx={{
             pt: 1,
             height: '100%',
 
         }}>
+            <Dialog sx={{
+                padding: 3
+            }} open={selectedSubscription !== undefined} onClose={() => setSelectedSubscription(undefined)}>
+                <Typography sx={{
+                    borderBottom: 2,
+                    padding: 2
+                }} variant="h5" >
+                    Confirm book order
+                </Typography>
+                <Box sx={{
+                    padding: 2
+                }}>
+                    <Typography >
+                        {` Book: ${book.name}`}
+                    </Typography>
+                    <Typography >
+                        {`Subscription: ${selectedSubscription?.name}`}
+                    </Typography>
+                    <Typography >
+                        {`Duration: ${selectedSubscription?.duration} days`}
+                    </Typography>
+                    <Typography >
+                        {`Price: ${selectedSubscription?.price} USD`}
+                    </Typography>
+                </Box>
+                <Box sx={{
+                    padding: 2,
+                    display: 'flex',
+                }}>
+                    <Button color='success' sx={{
+                        flex: 1,
+                    }} onClick={onConfirm}>Confirm</Button>
+                    <Button color='secondary' sx={{
+                        flex: 1,
+                    }} onClick={() => setSelectedSubscription(undefined)}>Reject</Button>
+                </Box>
+            </Dialog>
             <Box sx={{
-                height: '100%',
+                height: '70%',
                 display: 'flex',
                 justifyContent: 'space-between',
                 gap: 3,
@@ -34,7 +81,7 @@ export default function BookShowPage() {
                 <Box sx={{
                     backgroundImage: `url('/api/books/${book.id}/preview')`,
                     backgroundSize: 'cover',
-                    height: '80%',
+                    height: '90%',
                     flexBasis: '30%'
                 }} />
                 <Box sx={{
@@ -92,7 +139,9 @@ export default function BookShowPage() {
                                                 <TableCell>{st.duration}</TableCell>
                                                 <TableCell>{st.price}</TableCell>
                                                 <TableCell>
-                                                    <IconButton >
+                                                    <IconButton onClick={() => {
+                                                        setSelectedSubscription(st)
+                                                    }}>
                                                         <PaymentsIcon />
                                                     </IconButton>
                                                 </TableCell>
