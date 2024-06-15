@@ -67,10 +67,16 @@ export default function StatisticsPage() {
 
             }}>
                 <DatePicker label='From' onChange={val => {
+                    if (val && isNaN(val.getTime())) {
+                        return;
+                    }
                     urlSearchParams.set('from', val?.toISOString().slice(0, 10) || '');
                     setSearchParmas(urlSearchParams)
                 }} value={from ? new Date(from) : null} />
                 <DatePicker label='To' onChange={val => {
+                    if (val && isNaN(val.getTime())) {
+                        return;
+                    }
                     urlSearchParams.set('to', val?.toISOString().slice(0, 10) || '');
                     setSearchParmas(urlSearchParams)
                 }} value={to ? new Date(to) : null} />
