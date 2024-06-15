@@ -5,17 +5,20 @@ import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { UserContextProvider } from './userContext';
-
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { LocalizationProvider } from '@mui/x-date-pickers';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <UserContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </UserContextProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <UserContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </UserContextProvider>
+    </LocalizationProvider>
   </React.StrictMode>
 );
 

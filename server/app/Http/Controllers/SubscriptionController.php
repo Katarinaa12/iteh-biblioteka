@@ -104,7 +104,7 @@ class SubscriptionController extends Controller
         if (!$user->admin) {
             return response()->json(["error" => "Missing permissions"], 403);
         }
-        $query = DB::table('books')->select('books.id', 'books.name', DB::raw('SUM(subscriptions.price) as income'))
+        $query = DB::table('books')->select('books.id', 'books.name', DB::raw('COALESCE(SUM(subscriptions.price),0) as income'))
             ->leftJoin('subscriptions', 'subscriptions.book_id', '=', 'books.id');
         if ($from) {
             $query = $query->where('subscriptions.created_at', '>', $from);
@@ -125,7 +125,7 @@ class SubscriptionController extends Controller
         if (!$user->admin) {
             return response()->json(["error" => "Missing permissions"], 403);
         }
-        $query = DB::table('subscriptions')->select('subscriptions.status', DB::raw('SUM(*) as total'));
+        $query = DB::table('subscriptions')->select('subscriptions.status', DB::raw('COUNT(*) as total'));
         if ($from) {
             $query = $query->where('subscriptions.created_at', '>', $from);
         }

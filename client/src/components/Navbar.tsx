@@ -19,6 +19,12 @@ export default function Navbar() {
                             <NavbarLink to='/subscriptions' label='Subscriptions' size='normal' />
                         )
                     }
+                    {
+                        user?.admin && (
+                            <NavbarLink to='/statistics' label='Statistics' size='normal' />
+
+                        )
+                    }
                 </Box>
                 {
                     user ? (

@@ -111,3 +111,22 @@ export function useBookFile(book?: Book) {
     return { fileUrl, extension };
 
 }
+
+export function useStatistics(url: string) {
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState([])
+    const location = useLocation();
+
+    useEffect(() => {
+        setLoading(true);
+        axios.get(url + location.search)
+            .then(res => {
+                setData(res.data)
+            }).finally(() => {
+                setLoading(false)
+            })
+    }, [url, location.search])
+
+    return { data, loading };
+
+}
