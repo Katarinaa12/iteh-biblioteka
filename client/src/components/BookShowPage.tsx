@@ -119,9 +119,20 @@ export default function BookShowPage() {
                     flex: 1,
                     padding: 3
                 }}>
-                    <Typography
-                        variant='h6'
-                    >Subscription types</Typography>
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        paddingBottom: 2
+                    }}>
+                        <Typography
+                            variant='h6'
+                        >Subscription types</Typography>
+                        {
+                            user?.admin && (
+                                <Button color='primary' >Create</Button>
+                            )
+                        }
+                    </Box>
                     <TableContainer component={Paper}>
                         <Table sx={{ width: '100%' }}>
                             <TableHead>
@@ -129,7 +140,7 @@ export default function BookShowPage() {
                                     <TableCell>Name</TableCell>
                                     <TableCell>{`Duration (days)`}</TableCell>
                                     <TableCell>Price</TableCell>
-                                    {user && !user.admin && <TableCell>Buy</TableCell>}
+                                    {user && <TableCell>{user.admin ? 'Actions' : 'Buy'}</TableCell>}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -141,13 +152,26 @@ export default function BookShowPage() {
                                                 <TableCell>{st.duration}</TableCell>
                                                 <TableCell>{st.price}</TableCell>
                                                 {
-                                                    user && !user.admin && (
+                                                    user && (
                                                         <TableCell>
-                                                            <IconButton onClick={() => {
-                                                                setSelectedSubscription(st)
-                                                            }}>
-                                                                <PaymentsIcon />
-                                                            </IconButton>
+                                                            {
+                                                                user.admin ? (
+                                                                    <Box sx={{ display: 'flex' }}>
+                                                                        <Button color='success' sx={{
+                                                                            flex: 1,
+                                                                        }} >Update</Button>
+                                                                        <Button color='error' sx={{
+                                                                            flex: 1,
+                                                                        }} >Delete</Button>
+                                                                    </Box>
+                                                                ) : (
+                                                                    <IconButton onClick={() => {
+                                                                        setSelectedSubscription(st)
+                                                                    }}>
+                                                                        <PaymentsIcon />
+                                                                    </IconButton>
+                                                                )
+                                                            }
                                                         </TableCell>
                                                     )
                                                 }
