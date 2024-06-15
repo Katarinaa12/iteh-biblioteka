@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import BookSearchPage from './components/BookSearchPage';
 
 function App() {
   const { user } = useUserContext();
@@ -14,6 +15,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='*' element={<HomePage />} />
+        <Route path='/books' element={<BookSearchPage />} />
         {
           !user && (
             <>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Book, Books, Genre, Subscription } from '../types'
 import axios from 'axios'
+import { useLocation, useParams } from 'react-router'
+import { useSearchParams } from 'react-router-dom'
 interface BooksSearchParams {
     name: string,
     size: number,
@@ -8,21 +10,19 @@ interface BooksSearchParams {
     genre_id: number
 }
 
-export function useSearchBooks(params: Partial<BooksSearchParams>) {
+export function useSearchBooks() {
     const [loading, setLoading] = useState(true)
     const [books, setBooks] = useState<Books | undefined>(undefined)
-
+    const location = useLocation();
     useEffect(() => {
         setLoading(true);
-        axios.get('/api/books', {
-            params
-        }).then((result) => {
+        axios.get('/api/books' + location.search).then((result) => {
             setBooks(result.data)
         })
             .finally(() => {
                 setLoading(false)
             })
-    }, [params.name, params.genre_id, params.page, params.size])
+    }, [location])
 
     return { books, loading }
 }
