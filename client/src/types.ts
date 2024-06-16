@@ -54,7 +54,7 @@ export interface CreateBook {
     writter: string,
     pages: number,
     published_year: number,
-    genre_id: number
+    genre_id: number,
     preview: string,
     content: string,
     description: string,
