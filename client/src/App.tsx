@@ -29,7 +29,9 @@ function App() {
           <Route path='*' element={<HomePage />} />
           <Route path='/books/:id' element={<BookShowPage />} />
           <Route path='/books' element={user?.admin ? <BooksAdminPage /> : <BookSearchPage />} />
-          <Route path='/subscriptions' element={<SubscriptionPage />} />
+          {
+            user && <Route path='/subscriptions' element={<SubscriptionPage />} />
+          }
           {
             user?.admin && (
               <Route path='/statistics' element={<StatisticsPage />} />
