@@ -51,11 +51,13 @@ export type SubscriptionStatus = 'pending' | 'accepted' | 'rejected'
 export interface CreateBook {
     name: string,
     isbn: string,
-    description: string,
+    writter: string,
     pages: number,
-    publishedYear: number,
-    preview: string,
+    published_year: number,
     genre_id: number
+    preview: string,
+    content: string,
+    description: string,
 }
 export type UpdateBook = Partial<CreateBook>
 

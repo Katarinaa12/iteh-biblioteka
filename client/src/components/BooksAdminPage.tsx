@@ -2,10 +2,13 @@ import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContai
 import { useGetGenres, useSearchBooks } from '../hooks/apiHooks';
 import BookFilter from './BookFilter';
 import LoadingScreen from './LoadingScreen'; import { Link } from 'react-router-dom';
+import BookForm from './form/BookForm';
+import { useState } from 'react';
 
 
 export default function BooksAdminPage() {
     const { genres } = useGetGenres()
+    const [openForm, setOpenForm] = useState(false);
     const { books, loading } = useSearchBooks();
     if (loading && !books) {
         return (
@@ -16,12 +19,17 @@ export default function BooksAdminPage() {
         <Container sx={{
             padding: 2
         }}>
+            <BookForm genres={genres} open={openForm} onClose={() => {
+                setOpenForm(false);
+            }} />
             <BookFilter genres={genres} books={books} />
             <Box sx={{
                 paddingTop: 2,
                 paddingBottom: 2
             }}>
-                <Button variant='outlined' color='primary' >Create</Button>
+                <Button onClick={() => {
+                    setOpenForm(true)
+                }} variant='outlined' color='primary' >Create</Button>
             </Box>
             <TableContainer component={Paper}>
                 <Table sx={{ width: '100%' }}>
