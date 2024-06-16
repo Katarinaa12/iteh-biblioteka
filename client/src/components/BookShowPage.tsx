@@ -59,7 +59,7 @@ export default function BookShowPage() {
                                 }
                             })
                         } else {
-                            const res = await axios.put('/api/subscription-type/' + selectedSubscription.id, val);
+                            const res = await axios.put('/api/subscription-types/' + selectedSubscription.id, val);
                             setBook(prev => {
                                 if (!prev) {
                                     return prev;

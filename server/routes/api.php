@@ -5,6 +5,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\SubscriptionTypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,5 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('books/{bookId}/file', [FileController::class, 'getBookFile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    Route::apiResource('subscription-types', SubscriptionTypeController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('books', BookController::class)->only(['store', 'update', 'destroy']);
 });
