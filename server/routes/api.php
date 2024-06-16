@@ -24,6 +24,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::apiResource('books', BookController::class)->only(['index', 'show']);
 Route::get('books/{bookId}/preview', [FileController::class, 'getBookPreview']);
 Route::get('genres', [GenreController::class, 'index']);
+Route::get('online-books', [BookController::class, 'getOnlineBooks']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('upload', [FileController::class, 'uploadFile']);

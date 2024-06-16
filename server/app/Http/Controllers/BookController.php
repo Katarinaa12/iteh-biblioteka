@@ -7,6 +7,7 @@ use App\Http\Resources\BooksCollection;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 class BookController extends Controller
 {
@@ -118,5 +119,25 @@ class BookController extends Controller
         }
         $book->delete();
         return response()->noContent();
+    }
+
+    public function getOnlineBooks(Request $request)
+    {
+        $search = $request->query('search', '');
+        $page = max(intval($request->query('page', 1)), 1);
+        $response = Http::get('https://openlibrary.org/search.json', [
+            'q' => $search,
+            'page' => $page,
+            'limit' => 10
+        ]);
+        if (!$response->ok()) {
+            return response()->json(["error" => "Unexpected error"], 500);
+        }
+        $body = json_decode($response->body(), true);
+        return response()->json([
+            "books" => $body['docs'],
+            "total" => $body['numFound'],
+            "page" => ceil($body['start'] / intval($page))
+        ]);
     }
 }

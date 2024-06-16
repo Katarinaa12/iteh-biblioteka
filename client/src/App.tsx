@@ -12,6 +12,7 @@ import BookShowPage from './components/BookShowPage';
 import SubscriptionPage from './components/SubscriptionPage';
 import BooksAdminPage from './components/BooksAdminPage';
 import StatisticsPage from './components/StatisticsPage';
+import OnlineBooksPage from './components/OnlineBooksPage';
 
 function App() {
   const { user } = useUserContext();
@@ -29,6 +30,7 @@ function App() {
           <Route path='*' element={<HomePage />} />
           <Route path='/books/:id' element={<BookShowPage />} />
           <Route path='/books' element={user?.admin ? <BooksAdminPage /> : <BookSearchPage />} />
+          <Route path='online-books' element={<OnlineBooksPage />} />
           {
             user && <Route path='/subscriptions' element={<SubscriptionPage />} />
           }

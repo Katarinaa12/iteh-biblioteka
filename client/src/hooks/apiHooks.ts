@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import { Book, Books, Genre, Subscription } from '../types'
 
-
+interface OnlineBooks {
+    page: number,
+    total: number,
+    books: any[],
+}
 export function useSearchBooks() {
     const [loading, setLoading] = useState(true)
     const [books, setBooks] = useState<Books | undefined>(undefined)
@@ -24,6 +28,29 @@ export function useSearchBooks() {
     }, [location.search])
 
     return { books, loading, fetchBooks }
+}
+
+export function useOnlineBooks() {
+    const [loading, setLoading] = useState(true)
+    const [books, setBooks] = useState<OnlineBooks | undefined>(undefined)
+    const location = useLocation();
+
+    useEffect(() => {
+        setLoading(true);
+        const abortControler = new AbortController();
+        axios.get('/api/online-books' + location.search, { signal: abortControler.signal })
+            .then((result) => {
+                setBooks(result.data)
+            }).catch(err => { })
+            .finally(() => {
+                setLoading(false);
+            })
+        return () => {
+            abortControler.abort();
+        }
+    }, [location.search])
+
+    return { books, loading }
 }
 
 export function useGetBook(bookId: number) {

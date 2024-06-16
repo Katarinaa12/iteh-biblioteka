@@ -14,6 +14,7 @@ export default function Navbar() {
                 }}>
                     <NavbarLink to='/' label='ONLIBRARY' size='big' />
                     <NavbarLink to='/books' label='Books' size='normal' />
+                    <NavbarLink to='/online-books' label='Online Books' size='normal' />
                     {
                         user && (
                             <NavbarLink to='/subscriptions' label='Subscriptions' size='normal' />
