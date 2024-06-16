@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Dialog, TextField, Typography } from '@mui/material'
 import { SubscriptionType } from '../../types'
 
@@ -24,6 +24,20 @@ export default function SubscriptionTypeForm(props: Props) {
             }
         })
     }
+    useEffect(() => {
+        if (!props.open) {
+            return;
+        }
+        if (!props.subscriptionType) {
+            setFormState(initialFormState);
+            return;
+        }
+        setFormState({
+            name: props.subscriptionType.name,
+            price: props.subscriptionType.price,
+            duration: props.subscriptionType.duration,
+        })
+    }, [props.open, props.subscriptionType])
     return (
         <Dialog open={props.open} onClose={props.onClose} keepMounted>
             <Box sx={{
@@ -35,7 +49,7 @@ export default function SubscriptionTypeForm(props: Props) {
                         padding: 2,
                         borderBottom: 1
                     }}
-                >{props.subscriptionType ? 'Update book form' : 'Create book form'}</Typography>
+                >{props.subscriptionType ? 'Update subscription type form' : 'Create subscription type form'}</Typography>
                 <Box component='form' sx={{
                     padding: 2,
                     display: 'flex',
@@ -47,7 +61,7 @@ export default function SubscriptionTypeForm(props: Props) {
                 }}>
                     <TextField value={formState.name} onChange={onFieldChange('name')} InputLabelProps={{ shrink: true }} fullWidth label='Name' placeholder='Name' />
                     <TextField value={formState.price} onChange={onFieldChange('price')} InputLabelProps={{ shrink: true }} fullWidth type='number' label='Price' placeholder='Price' />
-                    <TextField value={formState.duration} onChange={onFieldChange('duration')} InputLabelProps={{ shrink: true }} fullWidth type='number' label='Duration' placeholder='Duration' />
+                    <TextField value={formState.duration} onChange={onFieldChange('duration')} InputLabelProps={{ shrink: true }} fullWidth type='number' label='Duration (days)' placeholder='Duration (days)' />
 
                     <Button variant='contained' color='primary' fullWidth type='submit'>Save book</Button>
                 </Box>

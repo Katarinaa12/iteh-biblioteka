@@ -40,7 +40,7 @@ export function useGetBook(bookId: number) {
             })
     }, [bookId])
 
-    return { book, loading }
+    return { book, loading, setBook }
 }
 
 export function useGetSubscriptions() {

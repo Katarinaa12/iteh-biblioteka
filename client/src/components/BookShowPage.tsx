@@ -7,11 +7,13 @@ import { SubscriptionType } from '../types';
 import LoadingScreen from './LoadingScreen';
 import axios from 'axios';
 import { useUserContext } from '../userContext';
+import SubscriptionTypeForm from './form/SubscriptionTypeForm';
 export default function BookShowPage() {
     const { id } = useParams();
     const { user } = useUserContext();
-    const { book, loading } = useGetBook(Number(id));
+    const { book, loading, setBook } = useGetBook(Number(id));
     const [selectedSubscription, setSelectedSubscription] = useState<SubscriptionType | undefined>(undefined);
+    const [openForm, setOpenForm] = useState(false);
     const navigate = useNavigate();
     const { fileUrl } = useBookFile(book);
     if (loading) {
@@ -36,43 +38,87 @@ export default function BookShowPage() {
             height: '100%',
 
         }}>
-            <Dialog sx={{
-                padding: 3
-            }} open={selectedSubscription !== undefined} onClose={() => setSelectedSubscription(undefined)}>
-                <Typography sx={{
-                    borderBottom: 2,
-                    padding: 2
-                }} variant="h5" >
-                    Confirm book order
-                </Typography>
-                <Box sx={{
-                    padding: 2
-                }}>
-                    <Typography >
-                        {` Book: ${book.name}`}
+            {
+                user?.admin && <SubscriptionTypeForm
+                    open={openForm}
+                    onClose={() => {
+                        setOpenForm(false);
+                        setSelectedSubscription(undefined);
+                    }}
+                    subscriptionType={selectedSubscription}
+                    onSubmit={async val => {
+                        if (!selectedSubscription) {
+                            const res = await axios.post("/api/subscription-types", val);
+                            setBook(prev => {
+                                if (!prev) {
+                                    return prev;
+                                }
+                                return {
+                                    ...prev,
+                                    subscriptionTypes: [...prev?.subscriptionTypes, res.data]
+                                }
+                            })
+                        } else {
+                            const res = await axios.put('/api/subscription-type/' + selectedSubscription.id, val);
+                            setBook(prev => {
+                                if (!prev) {
+                                    return prev;
+                                }
+                                return {
+                                    ...prev,
+                                    subscriptionTypes: prev.subscriptionTypes.map(element => {
+                                        if (element === selectedSubscription) {
+                                            return res.data;
+                                        }
+                                        return element;
+                                    })
+                                }
+                            })
+                        }
+                        setOpenForm(false);
+                        setSelectedSubscription(undefined);
+                    }}
+                />
+            }
+            {
+                !user?.admin && <Dialog sx={{
+                    padding: 3
+                }} open={selectedSubscription !== undefined} onClose={() => setSelectedSubscription(undefined)}>
+                    <Typography sx={{
+                        borderBottom: 2,
+                        padding: 2
+                    }} variant="h5" >
+                        Confirm book order
                     </Typography>
-                    <Typography >
-                        {`Subscription: ${selectedSubscription?.name}`}
-                    </Typography>
-                    <Typography >
-                        {`Duration: ${selectedSubscription?.duration} days`}
-                    </Typography>
-                    <Typography >
-                        {`Price: ${selectedSubscription?.price} USD`}
-                    </Typography>
-                </Box>
-                <Box sx={{
-                    padding: 2,
-                    display: 'flex',
-                }}>
-                    <Button color='success' sx={{
-                        flex: 1,
-                    }} onClick={onConfirm}>Confirm</Button>
-                    <Button color='secondary' sx={{
-                        flex: 1,
-                    }} onClick={() => setSelectedSubscription(undefined)}>Reject</Button>
-                </Box>
-            </Dialog>
+                    <Box sx={{
+                        padding: 2
+                    }}>
+                        <Typography >
+                            {` Book: ${book.name}`}
+                        </Typography>
+                        <Typography >
+                            {`Subscription: ${selectedSubscription?.name}`}
+                        </Typography>
+                        <Typography >
+                            {`Duration: ${selectedSubscription?.duration} days`}
+                        </Typography>
+                        <Typography >
+                            {`Price: ${selectedSubscription?.price} USD`}
+                        </Typography>
+                    </Box>
+                    <Box sx={{
+                        padding: 2,
+                        display: 'flex',
+                    }}>
+                        <Button color='success' sx={{
+                            flex: 1,
+                        }} onClick={onConfirm}>Confirm</Button>
+                        <Button color='secondary' sx={{
+                            flex: 1,
+                        }} onClick={() => setSelectedSubscription(undefined)}>Reject</Button>
+                    </Box>
+                </Dialog>
+            }
             <Box sx={{
                 height: '70%',
                 display: 'flex',
@@ -129,7 +175,9 @@ export default function BookShowPage() {
                         >Subscription types</Typography>
                         {
                             user?.admin && (
-                                <Button variant='outlined' color='primary' >Create</Button>
+                                <Button onClick={() => {
+                                    setOpenForm(true);
+                                }} variant='outlined' color='primary' >Create</Button>
                             )
                         }
                     </Box>
@@ -157,10 +205,24 @@ export default function BookShowPage() {
                                                             {
                                                                 user.admin ? (
                                                                     <Box sx={{ display: 'flex' }}>
-                                                                        <Button variant='outlined' color='success' sx={{
+                                                                        <Button onClick={() => {
+                                                                            setOpenForm(true);
+                                                                            setSelectedSubscription(st)
+                                                                        }} variant='outlined' color='success' sx={{
                                                                             flex: 1,
                                                                         }} >Update</Button>
-                                                                        <Button variant='outlined' color='error' sx={{
+                                                                        <Button onClick={async () => {
+                                                                            await axios.delete('/api/subscription-types/' + st.id);
+                                                                            setBook(prev => {
+                                                                                if (!prev) {
+                                                                                    return prev;
+                                                                                }
+                                                                                return {
+                                                                                    ...prev,
+                                                                                    subscriptionTypes: prev.subscriptionTypes.filter(val => val !== st)
+                                                                                }
+                                                                            })
+                                                                        }} variant='outlined' color='error' sx={{
                                                                             flex: 1,
                                                                         }} >Delete</Button>
                                                                     </Box>
