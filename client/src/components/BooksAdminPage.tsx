@@ -84,7 +84,10 @@ export default function BooksAdminPage() {
                                                     }} variant='outlined' color='success' sx={{
                                                         flex: 1,
                                                     }} >Update</Button>
-                                                    <Button variant='outlined' color='error' sx={{
+                                                    <Button onClick={async () => {
+                                                        await axios.delete('/api/books/' + book.id);
+                                                        fetchBooks();
+                                                    }} variant='outlined' color='error' sx={{
                                                         flex: 1,
                                                     }} >Delete</Button>
                                                 </Box>
