@@ -36,6 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('books/{bookId}/file', [FileController::class, 'getBookFile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
-    Route::apiResource('subscription-types', SubscriptionTypeController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('books/{bookId}/subscription-types', SubscriptionTypeController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('books', BookController::class)->only(['store', 'update', 'destroy']);
 });

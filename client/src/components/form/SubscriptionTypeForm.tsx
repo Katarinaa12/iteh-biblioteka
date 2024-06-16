@@ -57,7 +57,12 @@ export default function SubscriptionTypeForm(props: Props) {
                     gap: 1
                 }} onSubmit={e => {
                     e.preventDefault();
-                    props.onSubmit(formState)
+                    props.onSubmit({
+                        name: formState.name,
+                        price: Number(formState.price),
+                        duration: Number(formState.duration),
+
+                    })
                 }}>
                     <TextField value={formState.name} onChange={onFieldChange('name')} InputLabelProps={{ shrink: true }} fullWidth label='Name' placeholder='Name' />
                     <TextField value={formState.price} onChange={onFieldChange('price')} InputLabelProps={{ shrink: true }} fullWidth type='number' label='Price' placeholder='Price' />

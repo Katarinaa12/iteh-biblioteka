@@ -48,7 +48,7 @@ export default function BookShowPage() {
                     subscriptionType={selectedSubscription}
                     onSubmit={async val => {
                         if (!selectedSubscription) {
-                            const res = await axios.post("/api/subscription-types", val);
+                            const res = await axios.post(`/api/books/${id}/subscription-types`, val);
                             setBook(prev => {
                                 if (!prev) {
                                     return prev;
@@ -59,7 +59,7 @@ export default function BookShowPage() {
                                 }
                             })
                         } else {
-                            const res = await axios.put('/api/subscription-types/' + selectedSubscription.id, val);
+                            const res = await axios.put(`/api/books/${id}/subscription-types/` + selectedSubscription.id, val);
                             setBook(prev => {
                                 if (!prev) {
                                     return prev;
@@ -212,7 +212,7 @@ export default function BookShowPage() {
                                                                             flex: 1,
                                                                         }} >Update</Button>
                                                                         <Button onClick={async () => {
-                                                                            await axios.delete('/api/subscription-types/' + st.id);
+                                                                            await axios.delete(`/api/books/${id}/subscription-types/` + st.id);
                                                                             setBook(prev => {
                                                                                 if (!prev) {
                                                                                     return prev;

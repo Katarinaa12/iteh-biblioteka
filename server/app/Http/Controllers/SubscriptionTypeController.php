@@ -17,7 +17,7 @@ class SubscriptionTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $bookId)
     {
         $user = $request->user();
         if (!$user->admin) {
@@ -31,7 +31,12 @@ class SubscriptionTypeController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-        $subscriptionType = SubscriptionType::create($request->all());
+        $subscriptionType = SubscriptionType::create([
+            "name" => $request->name,
+            "price" => $request->price,
+            "book_id" => $request->bookId,
+            "duration" => $request->duration,
+        ]);
         return response()->json(new SubscriptionTypeResource($subscriptionType));
     }
 
@@ -43,14 +48,14 @@ class SubscriptionTypeController extends Controller
      * @param  \App\Models\SubscriptionType  $subscriptionType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $bookId, $id)
     {
         $user = $request->user();
         if (!$user->admin) {
             return response()->json(["error" => "Missing permissions"], 403);
         }
         $subscriptionType = SubscriptionType::find($id);
-        if (!$subscriptionType) {
+        if (!$subscriptionType && $subscriptionType->book_id != $bookId) {
             return  response()->json(["error" => "Missing subscription type"], 404);
         }
         $validator = Validator::make($request->all(), [
