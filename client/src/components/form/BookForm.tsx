@@ -2,6 +2,7 @@ import React from 'react'
 import { Genre } from '../../types'
 import { Box, Button, Dialog, TextField, Typography } from '@mui/material'
 import Select from '../Select'
+import FileInput from './FileInput'
 
 interface Props {
     genres: Genre[],
@@ -33,8 +34,8 @@ export default function BookForm(props: Props) {
                     <TextField InputLabelProps={{ shrink: true }} fullWidth label='Writter' placeholder='Writter' />
                     <TextField InputLabelProps={{ shrink: true }} fullWidth type='number' label='Number of pages' placeholder='Number of pages' />
                     <TextField InputLabelProps={{ shrink: true }} fullWidth type='number' label='Published year' placeholder='Published year' />
-                    <TextField InputLabelProps={{ shrink: true }} fullWidth type='file' label='Preview' />
-                    <TextField InputLabelProps={{ shrink: true }} fullWidth type='file' label='Content' />
+                    <FileInput value='' label='Preview' onChange={val => { }} />
+                    <FileInput value='' label='Content' onChange={val => { }} />
                     <Select value={''} fullWidth placeholder='Genre' onChange={(val) => { }} options={props.genres.map(genre => {
                         return {
                             value: genre.id,

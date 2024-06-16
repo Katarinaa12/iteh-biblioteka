@@ -18,7 +18,7 @@ class FileController extends Controller
             return response()->json(["error" => "Missing permissions"], 403);
         }
         $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpg',
+            'file' => 'required|mimes:doc,docx,pdf,txt,csv,png,jpg,jpeg',
         ]);
 
         if ($validator->fails()) {
