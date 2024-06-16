@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Genre } from '../../types'
+import { Genre, UpdateBook } from '../../types'
 import { Box, Button, Dialog, TextField, Typography } from '@mui/material'
 import Select from '../Select'
 import FileInput from './FileInput'
@@ -7,16 +7,17 @@ import FileInput from './FileInput'
 interface Props {
     genres: Genre[],
     open: boolean,
-    onClose: () => void
+    onClose: () => void,
+    onSubmit: (bookData: UpdateBook) => Promise<void>
 }
 
 const initialFormState = {
     name: '',
     isbn: '',
     writter: '',
-    pages: null as number | null,
-    published_year: null as number | null,
-    genre_id: null as number | null,
+    pages: undefined as number | undefined,
+    published_year: undefined as number | undefined,
+    genre_id: undefined as number | undefined,
     preview: '',
     content: '',
     description: '',
@@ -49,6 +50,9 @@ export default function BookForm(props: Props) {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1
+                }} onSubmit={e => {
+                    e.preventDefault();
+                    props.onSubmit(formState)
                 }}>
                     <TextField value={formState.name} onChange={onFieldChange('name')} InputLabelProps={{ shrink: true }} fullWidth label='Name' placeholder='Name' />
                     <TextField value={formState.isbn} onChange={onFieldChange('isbn')} InputLabelProps={{ shrink: true }} fullWidth label='ISBN' placeholder='ISBN' />

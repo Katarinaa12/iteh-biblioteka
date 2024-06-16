@@ -4,12 +4,14 @@ import BookFilter from './BookFilter';
 import LoadingScreen from './LoadingScreen'; import { Link } from 'react-router-dom';
 import BookForm from './form/BookForm';
 import { useState } from 'react';
+import { CreateBook, UpdateBook } from '../types';
+import axios from 'axios';
 
 
 export default function BooksAdminPage() {
     const { genres } = useGetGenres()
     const [openForm, setOpenForm] = useState(false);
-    const { books, loading } = useSearchBooks();
+    const { books, loading, fetchBooks } = useSearchBooks();
     if (loading && !books) {
         return (
             <LoadingScreen />
@@ -19,7 +21,11 @@ export default function BooksAdminPage() {
         <Container sx={{
             padding: 2
         }}>
-            <BookForm genres={genres} open={openForm} onClose={() => {
+            <BookForm onSubmit={async book => {
+                await axios.post('/api/books', book);
+                setOpenForm(false);
+                await fetchBooks();
+            }} genres={genres} open={openForm} onClose={() => {
                 setOpenForm(false);
             }} />
             <BookFilter genres={genres} books={books} />
