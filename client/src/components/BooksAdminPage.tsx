@@ -4,14 +4,15 @@ import BookFilter from './BookFilter';
 import LoadingScreen from './LoadingScreen'; import { Link } from 'react-router-dom';
 import BookForm from './form/BookForm';
 import { useState } from 'react';
-import { CreateBook, UpdateBook } from '../types';
 import axios from 'axios';
+import { Book } from '../types';
 
 
 export default function BooksAdminPage() {
     const { genres } = useGetGenres()
     const [openForm, setOpenForm] = useState(false);
     const { books, loading, fetchBooks } = useSearchBooks();
+    const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
     if (loading && !books) {
         return (
             <LoadingScreen />
@@ -21,9 +22,14 @@ export default function BooksAdminPage() {
         <Container sx={{
             padding: 2
         }}>
-            <BookForm onSubmit={async book => {
-                await axios.post('/api/books', book);
+            <BookForm book={selectedBook} onSubmit={async book => {
+                if (selectedBook) {
+                    await axios.put('/api/books/' + selectedBook.id, book);
+                } else {
+                    await axios.post('/api/books', book);
+                }
                 setOpenForm(false);
+                setSelectedBook(undefined);
                 await fetchBooks();
             }} genres={genres} open={openForm} onClose={() => {
                 setOpenForm(false);
@@ -67,12 +73,15 @@ export default function BooksAdminPage() {
                                             <TableCell>{book.writter}</TableCell>
                                             <TableCell>{book.isbn}</TableCell>
                                             <TableCell>{book.publishedYear}</TableCell>
-                                            <TableCell>{book.genre.id}</TableCell>
+                                            <TableCell>{book.genre.name}</TableCell>
                                             <TableCell>{book.pages}</TableCell>
                                             <TableCell>{book.description}</TableCell>
                                             <TableCell>
                                                 <Box sx={{ display: 'flex' }}>
-                                                    <Button variant='outlined' color='success' sx={{
+                                                    <Button onClick={() => {
+                                                        setSelectedBook(book);
+                                                        setOpenForm(true);
+                                                    }} variant='outlined' color='success' sx={{
                                                         flex: 1,
                                                     }} >Update</Button>
                                                     <Button variant='outlined' color='error' sx={{

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Genre, UpdateBook } from '../../types'
+import React, { useEffect, useState } from 'react'
+import { Book, Genre, UpdateBook } from '../../types'
 import { Box, Button, Dialog, TextField, Typography } from '@mui/material'
 import Select from '../Select'
 import FileInput from './FileInput'
@@ -7,6 +7,7 @@ import FileInput from './FileInput'
 interface Props {
     genres: Genre[],
     open: boolean,
+    book?: Book,
     onClose: () => void,
     onSubmit: (bookData: UpdateBook) => Promise<void>
 }
@@ -33,6 +34,26 @@ export default function BookForm(props: Props) {
             }
         })
     }
+    useEffect(() => {
+        if (!props.open) {
+            return;
+        }
+        if (!props.book) {
+            setFormState(initialFormState);
+            return;
+        }
+        setFormState({
+            name: props.book.name,
+            isbn: props.book.isbn,
+            writter: props.book.writter,
+            description: props.book.description,
+            pages: props.book.pages,
+            published_year: props.book.publishedYear,
+            preview: props.book.preview,
+            content: props.book.content,
+            genre_id: props.book.genre.id
+        })
+    }, [props.book, props.open])
     return (
         <Dialog open={props.open} onClose={props.onClose} keepMounted>
             <Box sx={{
@@ -44,7 +65,7 @@ export default function BookForm(props: Props) {
                         padding: 2,
                         borderBottom: 1
                     }}
-                >Create book form</Typography>
+                >{props.book ? 'Update book form' : 'Create book form'}</Typography>
                 <Box component='form' sx={{
                     padding: 2,
                     display: 'flex',
