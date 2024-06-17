@@ -118,6 +118,7 @@ export default function SubscriptionPage() {
                                             <TableCell>{st.status}</TableCell>
                                             <TableCell>{st.name}</TableCell>
                                             <TableCell>{st.duration}</TableCell>
+                                            {user?.admin && <TableCell>{st.user.name}</TableCell>}
                                             <TableCell>{formatDateString(st.startTime)}</TableCell>
                                             <TableCell>{formatDateString(st.endTime)}</TableCell>
                                             <TableCell>{st.price}</TableCell>
